@@ -12,7 +12,6 @@ export default function Register({ navigation }) {
     const [userDetails, setUserDetails] = useState({ email: '', name: '', password: '' });
 
     const onRegister = () => {
-        console.log(userDetails);
         dispatch(register(userDetails, navigation));
     }
 
@@ -60,7 +59,7 @@ const styles = StyleSheet.create({
         marginBottom: 20
     },
     inputField: {
-        height: '8%',
+        height: 50,
         width: '85%',
         borderWidth: 1,
         borderRadius: 8,

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { View, Text } from 'react-native';
 
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
@@ -12,7 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import RegisterScreen from './components/auth/Register';
 import LoginScreen from './components/auth/Login';
-import HomeScreen from './components/home/Home';
+import MainScreen from './components/Main';
 
 const store = createStore(reducers, compose(applyMiddleware(thunk)));
 
@@ -20,32 +21,36 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
 
-    const [loggedIn, setLoggedIn] = useState(false);
+    const [landingScreen, setLandingScreen] = useState('Login');
+    const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
-        const checkUser = async () => {
+        (async () => {
             try {
-                let user = await AsyncStorage.getItem('user');
-                user = JSON.parse(user);
-                if (!user) {
-                    setLoggedIn(false);
-                } else {
-                    setLoggedIn(true);
-                }
+                const user = JSON.parse(await AsyncStorage.getItem('user'));
+                if (user) setLandingScreen('Main');
+                setLoaded(true);
             } catch (error) {
                 console.log(error);
             }
-        }
-        checkUser();
+        })();
     }, [])
+
+    if (!loaded) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text>Loading...</Text>
+            </View>
+        );
+    }
 
     return (
         <Provider store={store}>
             <NavigationContainer>
-                <Stack.Navigator initialRouteName={!loggedIn ? 'Login' : 'Home'}>
+                <Stack.Navigator initialRouteName={landingScreen}>
                     <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }} />
                     <Stack.Screen name='Register' component={RegisterScreen} options={{ headerShown: false }} />
-                    <Stack.Screen name='Home' component={HomeScreen} />
+                    <Stack.Screen name='Main' component={MainScreen} options={{ headerShown: false }} />
                 </Stack.Navigator>
             </NavigationContainer>
         </Provider>

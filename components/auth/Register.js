@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
 import { StyleSheet, Button, Text, TextInput, View, Image } from 'react-native';
 
+import { useDispatch } from 'react-redux';
+
+import { register } from '../../redux/actions/auth';
+
 export default function Register({ navigation }) {
 
-    const [userDetails, setUserDetails] = useState({ email: '', password: '' });
+    const dispatch = useDispatch();
 
-    const onSignUp = () => {
+    const [userDetails, setUserDetails] = useState({ email: '', name: '', password: '' });
 
+    const onRegister = () => {
+        console.log(userDetails);
+        dispatch(register(userDetails, navigation));
     }
 
     return (
@@ -14,24 +21,24 @@ export default function Register({ navigation }) {
             <Image source={require('../../assets/instagramText.png')} style={styles.image} />
             <TextInput
                 placeholder='Email'
-                onChangeText={(email) => setUserDetails({ email })}
+                onChangeText={(email) => setUserDetails({ ...userDetails, email })}
                 style={styles.inputField}
             />
             <TextInput
                 placeholder='Name'
-                onChangeText={(name) => setUserDetails({ name })}
+                onChangeText={(name) => setUserDetails({ ...userDetails, name })}
                 style={styles.inputField}
             />
             <TextInput
                 placeholder='Password'
                 secureTextEntry={true}
-                onChangeText={(password) => setUserDetails({ password })}
+                onChangeText={(password) => setUserDetails({ ...userDetails, password })}
                 style={styles.inputField}
             />
             <View style={styles.button}>
                 <Button
                     title='Sign Up'
-                    onPress={onSignUp}
+                    onPress={onRegister}
                 />
             </View>
             <View style={{ paddingTop: 10 }}>
